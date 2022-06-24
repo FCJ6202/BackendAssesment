@@ -130,6 +130,52 @@ router.put('/update/:repoName',fetchData,async (req,res) => {
     }
 })
 
+
+router.post('/:repoName/contributer/:userName',fetchData,async (req,res) => {
+
+    try {
+        const {repoName , userName} = req.params;
+
+        const createrName = req.UserData.id;
+
+        // May be by mistake creater add himself to the contributer
+        if(createrName == userName){
+            return res.status(400).json({success : false , message : "Invalid Request"});
+        }
+
+        // User is valid or not
+        const Userdata = await user.findOne({username : userName});
+        if(!Userdata){
+            return res.status(400).json({success : false , message : "Invalid Request"});
+        }
+
+        repo.findOneAndUpdate({repoName,createrName},{$addToSet : {contributors :  {username : userName}}},(err,docs)=> {
+            if(err){
+                console.log(err)
+                return res.json({ success : false,error: err.message });
+            }else{
+                console.log(docs);
+                user.findOneAndUpdate({username : userName},{$addToSet : {joinRepo :  {createrName,repoName}}},(err,docs) =>{
+                    if(err){
+                        console.log(err)
+                        return res.json({ success : false,error: err.message });
+                    }else{
+                        console.log(docs);
+                    }
+                })
+
+                res.json({success : true});
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({ success : false,error: error.message });
+    }
+})
+
+
+
+
 // router.post('/JoinRepo/:RepoId/:Type',fetchData,async (req,res) => {
 
 //     try {
