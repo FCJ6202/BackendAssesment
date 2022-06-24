@@ -152,6 +152,12 @@ router.post('/:repoName/contributer/:userName',fetchData,async (req,res) => {
             return res.status(400).json({success : false , message : "Invalid Request"});
         }
 
+
+        const UserCheck = await repo.findOne({repoName,createrName});
+        if(!UserCheck){
+            return res.status(400).json({success : false , message : "Invalid Request"});
+        }
+
         repo.findOneAndUpdate({repoName,createrName},{$addToSet : {contributors :  {username : userName}}},(err,docs)=> {
             if(err){
                 console.log(err)
