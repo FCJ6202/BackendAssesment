@@ -192,7 +192,7 @@ router.get('/see/contributors/:createrName/:repoName',async (req,res)=>{
         if(repoData.visibility == true || AuthUser == createrName){
             return res.json(repoData.contributors);
         }else{
-            return res.status(400).json({ success : false});
+            return res.status(400).json({ success : false , message : "Invalid Request"});
         }
     } catch (error) {
         console.log(error)
@@ -200,84 +200,79 @@ router.get('/see/contributors/:createrName/:repoName',async (req,res)=>{
     }
 })
 
-// router.post('/JoinRepo/:RepoId/:Type',fetchData,async (req,res) => {
-
-//     try {
-//         //console.log(req.params);
-//         const {RepoId,Type} = req.params;
-//         const userId = req.UserData.id;
+router.post('/addstar/:createrName/:repoName',fetchData,async (req,res)=>{
+    try {
         
-//         //console.log(RepoId)
-//         const RepoData = await repo.findById(RepoId);
-//         const UserData = await user.findById(userId);
-//         // Is Repo Exists
-//         if(!RepoData){
-//             return res.status(404).json({success : false,error : "This repo is not exist"})
-//         }
-//         // Is User Already a member or admin
-//         RepoData.Admin.map((data)=>{
-//             if(data == userId){
-//                 return res.status(400).json({success : false,error : "You are already a admin of this repository"});
-//             }
-//         })
-//         RepoData.Member.map((data) => {
-//             if(data == userId){
-//                 return res.status(400).json({success : false,error : "You are already a member of this repository"});
-//             }
-//         })
-//         UserData.joinRepo.map((data) => {
-//             if(data == RepoId){
-//                 return res.status(400).json({success : false,error : "You joined that repository already"});
-//             }
-//         })
+        const {createrName,repoName} = req.params;
+        let AuthUser = req.UserData.id
 
-//         //console.log(UserData);
+        // const checkStar = await repo.findOne({createrName,repoName},{star : {$exists : true}});
+        // console.log({checkStar});
+        const repoData = await repo.findOne({createrName,repoName},{visibility : 1,_id : 0});
+        if(!repoData){
+            return res.status(400).json({success : false,message : "Invalid Request"});
+        }
+        if(repoData.visibility == true || AuthUser == createrName){
+            //return res.json(repoData.contributors);
+            repo.findOneAndUpdate({createrName,repoName},{$addToSet : {stargazers : AuthUser}},(err,docs) => {
+                if(err){
+                    console.log(err);
+                    return res.status(400).json({success : false,message : err});
+                }else{
+                    res.json({success : true});
+                }
+            })
+        }else{
+            return res.status(400).json({ success : false , message : "Invalid Request"});
+        }
+    } catch (error) {
+        console.log(error)
+        res.json({ success : false,error: error.message });
+    }
+})
+
+router.post('/fork/:createrName/:repoName',fetchData,async (req,res)=>{
+    try {
         
+        const {createrName,repoName} = req.params;
+        let AuthUser = req.UserData.id; 
+        // const checkStar = await repo.findOne({createrName,repoName},{star : {$exists : true}});
+        // console.log({checkStar});
+        const repoData = await repo.findOne({createrName,repoName},{visibility : 1,_id : 0});
+        if(!repoData){
+            return res.status(400).json({success : false,message : "Invalid Request"});
+        }
+        if(repoData.visibility == true || AuthUser == createrName){
+            //return res.json(repoData.contributors);
+            repo.findOneAndUpdate({createrName,repoName},{$addToSet : {forks : AuthUser}},(err,docs) => {
+                if(err){
+                    console.log(err);
+                    return res.status(400).json({success : false,message : err});
+                }else{
+                    res.json(docs);
+                    //res.json({success : true});
+                }
+            })
+        }else{
+            return res.status(400).json({ success : false , message : "Invalid Request"});
+        }
+    } catch (error) {
+        console.log(error)
+        res.json({ success : false,error: error.message });
+    }
+})
 
-//         //console.log(RepoData)
-//         // Type = 1 -> as member 2-> as admin
-//         if(Type == '1'){
-//             RepoData.Member.push(userId);
-//             repo.findByIdAndUpdate(RepoId,RepoData,(err,docs) => {
-//                 if(err){
-//                     console.log(err);
-//                     return res.json({success : false,message : "Not added a user in repo details"});
-//                 }
-//             })
-//         }else{
-//             RepoData.Admin.push(userId);
-//             repo.findByIdAndUpdate(RepoId,RepoData,(err,docs) => {
-//                 if(err){
-//                     console.log(err);
-//                     return res.json({success : false,message : "Not added a user in repo details"});
-//                 }
-//             })
-//         }
-//         UserData.joinRepo.push(RepoId);
-//         user.findByIdAndUpdate(userId,UserData,(err,docs) => {
-//             if(err){
-//                 console.log(err);
-//                 return res.json({success : false,message : "Not added a repo in user details"});
-//             }
-//         })
 
-//         res.json(RepoData)
-//         console.log(UserData)
-//     } catch (error) {
-//         console.log(error)
-//         res.json({ error: error.message });
-//     }
-// })
-
-// router.post('/Repodata/:RepoId',fetchData, async (req, res) => {
-//     try {
-//       const id = req.params.RepoId;
-//       const repoData = await repo.findById(id).select("-password");
-//       res.json(repoData);
-//     } catch (error) {
-//       console.log(error)
-//       res.json({error: error.message });
-//     }
-//   })
+router.get('/filter',fetchData,async (req,res)=>{
+    try {
+        const AuthUser = req.UserData.id;
+        const UserRepo = await repo.find({$and : [{createrName : AuthUser},{"stargazers.1" : {"$exists" : true}}]});
+        console.log(UserRepo);
+        
+    } catch (error) {
+        console.log(error)
+        res.json({ success : false,error: error.message });
+    }
+})
 
 module.exports = router;

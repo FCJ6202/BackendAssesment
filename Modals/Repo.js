@@ -28,6 +28,16 @@ const RepoSchema = new Schema({
         default : []
     },
 
+    forks : {
+        type : Array,
+        default : []
+    },
+
+    commits : { // it nothing but array of object where first field is commit message and second field is date
+        type : Array,
+        default : []
+    },
+
     visibility : {
         type : Boolean,
         default : false  // true for visibility for everyone but false for visibility only for creater and contributers
