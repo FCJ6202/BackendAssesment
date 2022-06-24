@@ -4,6 +4,9 @@ const repo = require('../Modals/Repo');
 const user = require('../Modals/Auth');
 const { body, validationResult } = require('express-validator');
 const fetchData = require('../middleware/fetchData');
+var jwt = require('jsonwebtoken');
+
+const JWT_secret = "iamironman";
 
 
 
@@ -174,7 +177,30 @@ router.post('/:repoName/contributer/:userName',fetchData,async (req,res) => {
 })
 
 
-
+router.get('/see/contributors/:createrName/:repoName',async (req,res)=>{
+    try {
+        
+        const {createrName,repoName} = req.params;
+        const token = req.header('auth-token');
+        let AuthUser;
+        if(token){
+            var decoded = jwt.verify(token, JWT_secret);
+            AuthUser = decoded.User.id;
+        }
+        const repoData = await repo.findOne({createrName,repoName},{visibility : 1,_id : 0,contributors : 1});
+        if(!repoData){
+            return res.status(400).json({success : false,message : "Invalid Request"});
+        }
+        if(repoData.visibility == true || AuthUser == createrName){
+            return res.json(repoData.contributors);
+        }else{
+            return res.status(400).json({ success : false});
+        }
+    } catch (error) {
+        console.log(error)
+        res.json({ success : false,error: error.message });
+    }
+})
 
 // router.post('/JoinRepo/:RepoId/:Type',fetchData,async (req,res) => {
 
