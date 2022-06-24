@@ -157,13 +157,11 @@ router.post('/:repoName/contributer/:userName',fetchData,async (req,res) => {
                 console.log(err)
                 return res.json({ success : false,error: err.message });
             }else{
-                console.log(docs);
                 user.findOneAndUpdate({username : userName},{$addToSet : {joinRepo :  {createrName,repoName}}},(err,docs) =>{
                     if(err){
                         console.log(err)
                         return res.json({ success : false,error: err.message });
                     }else{
-                        console.log(docs);
                     }
                 })
 
