@@ -1,5 +1,6 @@
 # BackendAssesment
 Requirement :- you npm features in your computer, if you did not have this please install before fork.
+Note :- I upload a Thunderclient collection also if you have thunderclient than simply import that collection in thunderclient and you will get all the endpoint which I was created for this project 
 
 step 1:- After fork, You open that location in terminal and type command <b>npm install</b> <br/>
 step 2: After completing installing you have to start a server for using the endpoint, Therfore type command <b> nodemon index.js <b/> <br/>
@@ -32,6 +33,7 @@ If you want to put header than header of this endpoint like these :- <br/> auth-
                                                                       Content-Type: application/json<br/>
   eg:- auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImlkIjoiS0hVUzEyMyJ9LCJpYXQiOjE2NTYwOTg5NDJ9.hUTkYM-V2l2hLcgj_MaDbEKAj87KLMMwmNBOiZW5nWI <br/>
      Content-Type: application/json<br/>
+<br/>
   
  
   
