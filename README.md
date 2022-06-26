@@ -16,6 +16,7 @@ Note :- I upload a Thunderclient collection also if you have thunderclient than 
  
  <br/>step 6 : If you want to create a repository than you must authenticate yourself, because after authenticate you will get a token in response and this token you add into the header.<br/>
 For repoCreate ending point is :- <b>http://localhost:4000/u/repo/createRepo</b><br/>
+Method :- Post <br/>
 header of this endpoint is :- <br/> auth-token: \<token>/<br/> 
                             Content-Type: application/json<br/>
 eg:- auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImlkIjoiS0hVUzEyMyJ9LCJpYXQiOjE2NTYwOTg5NDJ9.hUTkYM-V2l2hLcgj_MaDbEKAj87KLMMwmNBOiZW5nWI <br/>
@@ -28,6 +29,7 @@ body of this endpoint is :- repoName,repoDescription,visibility. if you doesn't 
   
 <br/>step 7:- If want to see all Repo of the user than you have in a two condition if you are a authecated user and want to see himself repo than you see private as well as public repo but you want to see another user repo than you not able to see that private repo, you will only public repo.
 <br/>See Repo of a user done by this endpoint which is :- <ins>http://localhost:4000/u/auth/repodata/<username\></ins>, In position of username you have to put username which all repo you want to see <br/>
+  Method :- Get <br/>
  <br/>if you don't put auth-token in the header than this end point think that you doesn't authenticated yourself, than you will not able to see any private repo of the user.<br/>
 If you want to put header than header of this endpoint like these :- <br/> auth-token: <token\>(You will get token when you authenticate himself using SignUP or Login endpoint) <br/>
                                                                       Content-Type: application/json<br/>
@@ -83,7 +85,16 @@ If you want to put header than header of this endpoint like these :- <br/> auth-
   <br/> step 11 :- For See List of Contributers :- <br/>
   Note :- For private repo only creater will see All contributer but for public repo anyone can see the Contributers list.
   Endpoint :- <ins> http://localhost:4000/u/repo/see/contributors/<userName\>/<repoName\> </ins> , there is a repoName and userName which is also know as address of repository because two repository name can't same in the particular user but two repository same in different user. and if repository is public than user will able to see  else for private repo, It get <b><u>invalid request<u/></b>.<br/>
-  Method :- Post <br/>
+  Method :- Get <br/>
+  Header :- <br/> auth-token: <token\> (You will get token when you authenticate himself using SignUP or Login endpoint) <br/>
+            Content-Type: application/json<br/>
+  eg:- auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImlkIjoiS0hVUzEyMyJ9LCJpYXQiOjE2NTYwOTg5NDJ9.hUTkYM-V2l2hLcgj_MaDbEKAj87KLMMwmNBOiZW5nWI <br/>
+     Content-Type: application/json<br/>
+  
+  <br/> step 12 :- For See no of repo which star>5 and fork>5 :- <br/>
+  Note :- For private repo only creater will see that but for public repo anyone can see that.
+  Endpoint :- <ins> http://localhost:4000/u/repo/filter </ins> ,<br/>
+  Method :- Get <br/>
   Header :- <br/> auth-token: <token\> (You will get token when you authenticate himself using SignUP or Login endpoint) <br/>
             Content-Type: application/json<br/>
   eg:- auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImlkIjoiS0hVUzEyMyJ9LCJpYXQiOjE2NTYwOTg5NDJ9.hUTkYM-V2l2hLcgj_MaDbEKAj87KLMMwmNBOiZW5nWI <br/>
